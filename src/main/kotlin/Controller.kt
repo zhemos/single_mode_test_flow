@@ -1,9 +1,32 @@
-import kotlin.math.E
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import java.util.LinkedList
 import kotlin.random.Random
 
 class Controller {
+
+    private val _questions = mutableMapOf<String, LinkedList<Question>>()
+    val questions: Map<String, List<Question>> get() = _questions
+
+
+    fun getQuestions(): Flow<List<Question>> = flow {
+
+    }
+
     init {
-        Database
+        println("size all questions in db = ${Database.size}")
+        addQuestions(EN)
+    }
+
+    private fun addQuestions(categoryTag: String) {
+        val queueQuestions = LinkedList<Question>()
+
+        _questions[categoryTag] = queueQuestions
+    }
+
+    companion object {
+        private const val MAX_ACTIVE_QUESTIONS = 3
     }
 }
 
@@ -11,29 +34,30 @@ object Database {
 
     private val questions = mutableListOf<Question>()
 
+    val size get() = questions.size
+
+    fun getQuestion(
+        categoryTag: String,
+    ): Question? {
+        return null
+    }
+
     init {
         repeat(COUNT_OF_CHAPTERS) { chapter ->
-            val countOfQuestions = Random.nextInt(5, 11)
+            val countOfQuestions = Random.nextInt(MIN_COUNT_OF_QUESTIONS, MAX_COUNT_OF_QUESTIONS)
             repeat(countOfQuestions) {
                 val newQuestion = createQuestion(EN, chapter, it)
                 questions.add(newQuestion)
             }
         }
     }
-
-//    private val questions = listOf(
-//        createQuestion(EN, 1, 1),
-//        createQuestion(EN, 1, 2),
-//        createQuestion(EN, 1, 3),
-//        createQuestion(EN, 1, 4),
-//        createQuestion(EN, 1, 5),
-//        createQuestion(EN, 1, 1),
-//    )
 }
 
 private const val COUNT_OF_CHAPTERS = 10
-private const val EN = "eng"
-private const val SP = "spa"
+private const val MIN_COUNT_OF_QUESTIONS = 5
+private const val MAX_COUNT_OF_QUESTIONS = 11
+const val EN = "eng"
+const val SP = "spa"
 
 data class Question(
     val categoryTag: String,
