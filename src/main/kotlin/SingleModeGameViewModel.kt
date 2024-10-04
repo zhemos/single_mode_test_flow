@@ -7,7 +7,7 @@ import kotlinx.coroutines.launch
 class SingleModeGameViewModel(private val mode: Mode) {
 
     private val scope = CoroutineScope(Job())
-    private val controller = Controller()
+    private val controller = ShowController()
 
     private val questionUi = MutableSharedFlow<String>()
     val questionUiState: Flow<String> = questionUi.asSharedFlow()

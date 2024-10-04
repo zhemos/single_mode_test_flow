@@ -4,7 +4,7 @@ import kotlinx.coroutines.flow.flow
 import java.util.LinkedList
 import kotlin.random.Random
 
-class Controller {
+abstract class Controller {
 
     private val _questions = mutableMapOf<String, LinkedList<Question>>()
     val questions: Map<String, List<Question>> get() = _questions
@@ -30,6 +30,8 @@ class Controller {
     }
 }
 
+class ShowController : Controller()
+
 object Database {
 
     private val questions = mutableListOf<Question>()
@@ -46,7 +48,7 @@ object Database {
         repeat(COUNT_OF_CHAPTERS) { chapter ->
             val countOfQuestions = Random.nextInt(MIN_COUNT_OF_QUESTIONS, MAX_COUNT_OF_QUESTIONS)
             repeat(countOfQuestions) {
-                val newQuestion = createQuestion(EN, chapter, it)
+                val newQuestion = createQuestion(it, EN, chapter, it)
                 questions.add(newQuestion)
             }
         }
@@ -60,6 +62,7 @@ const val EN = "eng"
 const val SP = "spa"
 
 data class Question(
+    val id: Int,
     val categoryTag: String,
     val chapter: Int,
     val index: Int,
@@ -67,10 +70,12 @@ data class Question(
 )
 
 fun createQuestion(
+    id: Int,
     categoryTag: String,
     chapter: Int,
     index: Int,
 ) = Question(
+    id = id,
     categoryTag = categoryTag,
     chapter = chapter,
     index = index,
